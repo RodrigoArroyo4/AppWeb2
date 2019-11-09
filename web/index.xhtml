@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <h:outputStylesheet library="css" name="styles.css"/>
+        <title>#{msgs.windowTitle}</title>
+        #{dataBase}
+    </h:head>
+    <h:body>
+        <h3>#{msgs.title} </h3>
+        <h:message id="numberFormatExMessage" for="numberFormatExMessage" style="color: red; font-size:45px"/>
+        <h:form>
+            <h:dataTable value="#{buyer.buyers_cart}" binding="#{dataBase.table}" rows="#{dataBase.rowsOnPage}" first="0" var="item" border="1" styleClass="names">
+                <h:column>
+                    <f:facet name="header">
+                        Number of Units to Purchase
+                    </f:facet>
+
+                    <h:inputText  id= "inputtextCantidad" value="#{buyer.actual_quantity}">
+                        <f:ajax listener="#{buyer.actualize_quantity(item,buyer.actual_quantity)}" event="blur" execute="@this" render="outputTextStock numberFormatExMessage priceColumn">
+                        </f:ajax>
+                    </h:inputText>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">
+                        Total Item Price
+                    </f:facet>
+
+                    <h:outputText id="priceColumn" value="#{buyer.itemTotalPrice(item)}">
+                    </h:outputText>
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:commandLink action="#{buyer.sortItemsByCode('asc')}">
+                            Code ASC
+                        </h:commandLink>
+                        |
+                        <h:commandLink action="#{buyer.sortItemsByCode('dcs')}">
+                            Code DSC
+                        </h:commandLink>
+                    </f:facet>
+                    #{item.serial_number}
+                </h:column>
+
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:commandLink action="#{buyer.sortItemsByName('asc')}">
+                            Name ASC
+                        </h:commandLink>
+                        |
+                        <h:commandLink action="#{buyer.sortItemsByName('dsc')}">
+                            Name DSC
+                        </h:commandLink>
+                    </f:facet>
+                    #{item.name}
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:commandLink action="#{buyer.sortItemsbyPrice(1)}">
+                            Price ASC
+                        </h:commandLink>
+                        |
+                        <h:commandLink action="#{buyer.sortItemsbyPrice(-1)}">
+                            Price DSC
+                        </h:commandLink>
+                    </f:facet>
+                    #{item.price} $
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        Number of Units in Stock
+                    </f:facet>
+                    <h:outputText id="outputTextStock" value="#{buyer.quantity.get(item)}">
+                    </h:outputText>
+                </h:column>
+                <f:facet name="footer">
+                    <h:commandButton value="First Page" action="#{dataBase.goToFirstPage()}" disabled="#{dataBase.table.first eq 0}" />
+                    <h:commandButton value="Previous Page" action="#{dataBase.goToPreviousPage()}" disabled="#{dataBase.table.first eq 0}" />
+                    <h:commandButton value="Next Page" action="#{dataBase.goToNextPage()}" disabled="#{dataBase.table.first + dataBase.table.rows ge dataBase.table.rowCount}" />
+                    <h:commandButton value="Last Page" action="#{dataBase.goToLastPage()}" disabled="#{dataBase.table.first + dataBase.table.rows ge dataBase.table.rowCount}" />
+                </f:facet>
+            </h:dataTable>
+        </h:form>
+
+    </h:body>
+</html>
+
